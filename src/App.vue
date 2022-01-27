@@ -69,27 +69,26 @@ export default {
     let editID = ref(null);
 
     function addItem() {
-      if (!text.value) {
+      if (text.value.trim().length === 0) {
         alert('please enter the value!');
+        text.value('');
         return;
       } else if (text.value && editing) {
-        const newList = list.value.map((item) => {
-          if (item.id === editID) {
-            return { ...item, title: text.value };
-          } else {
-            return item;
-          }
+        list.value = list.value.map((item) =>
+          item.id === editID.value ? { ...item, title: text.value } : item
+        );
+        editing = false;
+        editID.value = null;
+        text.value = '';
+      } else {
+        list.value.push({
+          id: new Date().getTime().toString(),
+          done: false,
+          title: text.value,
         });
-        list.value = newList;
+        text.value = '';
       }
-      list.value.push({
-        id: new Date().getTime().toString(),
-        done: false,
-        title: text.value,
-      });
-      text.value = '';
-      editing = false;
-      editID.value = null;
+      console.log(list.value);
     }
 
     function toggleDone(item) {
